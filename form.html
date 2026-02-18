@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма опроса</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .nav {
+            background: #2c3e50;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .site-title {
+            color: white;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #34495e;
+        }
+        
+        .nav-links a.active {
+            background: #667eea;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+        
+        .user-badge {
+            background: #27ae60;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+        
+        button[type="submit"]:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+            display: none;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-left {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <div class="nav-left">
+            <span class="site-title">16 server</span>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="table.html">Таблица</a>
+                <a href="form.html" class="active">Форма</a>
+                <a href="faq.html">FAQ</a>
+                <a href="responses.html" id="responsesLink" style="display: none;">Ответы</a>
+                <a href="users.html" id="usersLink" style="display: none;">Пользователи</a>
+                <a href="admin-message.html" id="allMessagesLink" style="display: none;">Управление</a>
+            </div>
+        </div>
+        <div class="user-info">
+            <span class="user-badge" id="userRole">Загрузка...</span>
+            <span id="username">Гость</span>
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="form-container">
+            <h2>Пожалуйста, ответьте на вопросы</h2>
+            
+            <div id="successMessage" class="success-message">
+                Спасибо! Ваши ответы успешно отправлены.
+            </div>
+            
+            <div id="errorMessage" class="error-message">
+                Произошла ошибка. Пожалуйста, попробуйте снова.
+            </div>
+            
+            <form id="surveyForm">
+                <div class="form-group">
+                    <label>❓ Вопрос 1: Как вы оцениваете наш форум?</label>
+                    <input type="text" id="question1" placeholder="Напишите ваше мнение..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>💡 Вопрос 2: Что бы вы хотели улучшить?</label>
+                    <textarea id="question2" placeholder="Поделитесь идеями..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>🌟 Вопрос 3: Ваши пожелания администрации</label>
+                    <textarea id="question3" placeholder="Напишите ваши пожелания..." required></textarea>
+                </div>
+                
+                <button type="submit">📤 Отправить ответы</button>
+            </form>
+            
+            <a href="index.html" class="back-btn">← Вернуться на главную</a>
+        </div>
+    </div>
+
+    <script>
+        // Проверка авторизации
+        function checkAuth() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            return currentUser;
+        }
+
+        // Функция для перевода роли на русский
+        function getRoleText(role) {
+            switch(role) {
+                case 'admin': return 'Администратор';
+                case 'moderator': return 'Модератор';
+                case 'user': return 'Пользователь';
+                default: return role;
+            }
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            const currentUser = checkAuth();
+            if (!currentUser) return;
+
+            document.getElementById('username').textContent = currentUser.username;
+            document.getElementById('userRole').textContent = 'Роль: ' + getRoleText(currentUser.role);
+
+            // Показываем ссылки в зависимости от роли
+            const responsesLink = document.getElementById('responsesLink');
+            const usersLink = document.getElementById('usersLink');
+            const allMessagesLink = document.getElementById('allMessagesLink');
+            
+            if (currentUser.role === 'admin' || currentUser.role === 'moderator') {
+                responsesLink.style.display = 'inline-block';
+            }
+            
+            if (currentUser.role === 'admin') {
+                usersLink.style.display = 'inline-block';
+                allMessagesLink.style.display = 'inline-block';
+            }
+        }
+
+        // Инициализация ответов если их нет
+        function initializeResponses() {
+            if (!localStorage.getItem('formResponses')) {
+                localStorage.setItem('formResponses', JSON.stringify([]));
+            }
+        }
+
+        // Обработка отправки формы
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentUser = checkAuth();
+            if (!currentUser) return;
+
+            // Получаем значения полей
+            const question1 = document.getElementById('question1').value.trim();
+            const question2 = document.getElementById('question2').value.trim();
+            const question3 = document.getElementById('question3').value.trim();
+
+            // Проверяем, что поля не пустые
+            if (!question1 || !question2 || !question3) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+                
+                // Скрываем сообщение об ошибке через 3 секунды
+                setTimeout(() => {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
+                
+                return;
+            }
+
+            // Создаем новый ответ
+            const newResponse = {
+                id: Date.now(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                question1: question1,
+                question2: question2,
+                question3: question3,
+                status: 'pending',
+                date: new Date().toISOString()
+            };
+
+            // Сохраняем ответ
+            const responses = JSON.parse(localStorage.getItem('formResponses')) || [];
+            responses.push(newResponse);
+            localStorage.setItem('formResponses', JSON.stringify(responses));
+
+            // Очищаем форму
+            document.getElementById('question1').value = '';
+            document.getElementById('question2').value = '';
+            document.getElementById('question3').value = '';
+
+            // Показываем сообщение об успехе
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+
+            // Скрываем сообщение через 3 секунды
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        });
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeResponses();
+            updateUI();
+        });
+    </script>
+</body>
+</html>

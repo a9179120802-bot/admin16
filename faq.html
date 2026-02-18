@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Часто задаваемые вопросы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .nav {
+            background: #2c3e50;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .site-title {
+            color: white;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #34495e;
+        }
+        
+        .nav-links a.active {
+            background: #667eea;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+        
+        .user-badge {
+            background: #27ae60;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .faq-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .faq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .faq-header h2 {
+            color: #333;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .admin-controls {
+            display: none;
+        }
+        
+        .admin-controls.show {
+            display: block;
+        }
+        
+        .add-faq-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .add-faq-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        .create-faq-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            color: white;
+            display: none;
+        }
+        
+        .create-faq-section.show {
+            display: block;
+        }
+        
+        .create-faq-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: 2px solid #fff;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .save-faq-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .save-faq-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .faq-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .faq-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .faq-question {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-right: 100px;
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        .faq-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .faq-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-faq-btn, .delete-faq-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s, transform 0.3s;
+        }
+        
+        .edit-faq-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .edit-faq-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .delete-faq-btn {
+            background: #f56565;
+            color: white;
+        }
+        
+        .delete-faq-btn:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+        
+        /* Модальное окно для редактирования */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .modal-content h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+        
+        .modal-content input:focus,
+        .modal-content textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .modal-content textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .modal-save-btn, .modal-cancel-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        
+        .modal-save-btn {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .modal-save-btn:hover {
+            background: #38a169;
+        }
+        
+        .modal-cancel-btn {
+            background: #a0aec0;
+            color: white;
+        }
+        
+        .modal-cancel-btn:hover {
+            background: #718096;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .no-faq {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+            font-size: 1.2em;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-left {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .faq-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .faq-question {
+                padding-right: 0;
+                margin-bottom: 50px;
+            }
+            
+            .faq-actions {
+                position: static;
+                justify-content: flex-end;
+                margin-top: 15px;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <div class="nav-left">
+            <span class="site-title">16 server</span>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="table.html">Таблица</a>
+                <a href="form.html">Форма</a>
+                <a href="faq.html" class="active">FAQ</a>
+                <a href="responses.html" id="responsesLink" style="display: none;">Ответы</a>
+                <a href="users.html" id="usersLink" style="display: none;">Пользователи</a>
+                <a href="admin-message.html" id="allMessagesLink" style="display: none;">Управление</a>
+            </div>
+        </div>
+        <div class="user-info">
+            <span class="user-badge" id="userRole">Загрузка...</span>
+            <span id="username">Гость</span>
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="faq-container">
+            <div id="alertMessage" class="alert"></div>
+            
+            <div class="faq-header">
+                <h2>
+                    ❓ Часто задаваемые вопросы
+                </h2>
+                
+                <!-- Кнопка добавления FAQ (только для админа) -->
+                <div class="admin-controls" id="adminControls">
+                    <button class="add-faq-btn" onclick="toggleCreateForm()">
+                        ➕ Добавить вопрос
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Форма создания нового FAQ (только для админа) -->
+            <div class="create-faq-section" id="createFaqSection">
+                <h3>➕ Создать новый вопрос</h3>
+                <div class="form-group">
+                    <input type="text" id="newQuestion" placeholder="Вопрос" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="newAnswer" placeholder="Ответ" required></textarea>
+                </div>
+                <button class="save-faq-btn" onclick="createFaq()">Сохранить вопрос</button>
+            </div>
+            
+            <!-- Список FAQ -->
+            <div class="faq-list" id="faqList">
+                <!-- FAQ будут загружены через JavaScript -->
+            </div>
+            
+            <a href="index.html" class="back-btn">← Вернуться на главную</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>✏️ Редактировать вопрос</h3>
+            <input type="text" id="editQuestion" placeholder="Вопрос">
+            <textarea id="editAnswer" placeholder="Ответ"></textarea>
+            <div class="modal-buttons">
+                <button class="modal-save-btn" onclick="saveEdit()">Сохранить</button>
+                <button class="modal-cancel-btn" onclick="closeEditModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEditId = null;
+
+        // Проверка авторизации
+        function checkAuth() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            return currentUser;
+        }
+
+        // Функция для перевода роли на русский
+        function getRoleText(role) {
+            switch(role) {
+                case 'admin': return 'Администратор';
+                case 'moderator': return 'Модератор';
+                case 'user': return 'Пользователь';
+                default: return role;
+            }
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            const currentUser = checkAuth();
+            if (!currentUser) return;
+
+            document.getElementById('username').textContent = currentUser.username;
+            document.getElementById('userRole').textContent = 'Роль: ' + getRoleText(currentUser.role);
+
+            // Показываем ссылки в зависимости от роли
+            const responsesLink = document.getElementById('responsesLink');
+            const usersLink = document.getElementById('usersLink');
+            const allMessagesLink = document.getElementById('allMessagesLink');
+            const adminControls = document.getElementById('adminControls');
+            
+            if (currentUser.role === 'admin' || currentUser.role === 'moderator') {
+                responsesLink.style.display = 'inline-block';
+            }
+            
+            if (currentUser.role === 'admin') {
+                usersLink.style.display = 'inline-block';
+                allMessagesLink.style.display = 'inline-block';
+                adminControls.classList.add('show');
+            }
+
+            // Загружаем FAQ
+            loadFaq();
+        }
+
+        // Инициализация FAQ
+        function initializeFaq() {
+            if (!localStorage.getItem('faqItems')) {
+                const defaultFaq = [
+                    {
+                        id: 1,
+                        question: 'Как зарегистрироваться на форуме?',
+                        answer: 'Для регистрации нажмите кнопку "Войти" и используйте тестовые аккаунты: admin/admin123, moderator/mod123, user/user123',
+                        date: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        question: 'Какие возможности есть у модератора?',
+                        answer: 'Модератор может просматривать ответы пользователей на форму и изменять их статус (ОДОБРЕНО/ОТКАЗАНО).',
+                        date: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        question: 'Что может делать администратор?',
+                        answer: 'Администратор может создавать/удалять пользователей, управлять сообщениями, создавать и редактировать FAQ, управлять таблицей и просматривать все ответы.',
+                        date: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('faqItems', JSON.stringify(defaultFaq));
+            }
+        }
+
+        // Загрузка FAQ
+        function loadFaq() {
+            const currentUser = checkAuth();
+            const faqItems = JSON.parse(localStorage.getItem('faqItems')) || [];
+            const faqList = document.getElementById('faqList');
+            
+            if (faqItems.length === 0) {
+                faqList.innerHTML = '<div class="no-faq">📭 Пока нет вопросов</div>';
+                return;
+            }
+
+            // Сортируем по дате (сначала новые)
+            faqItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            let html = '';
+            faqItems.forEach(item => {
+                const date = new Date(item.date).toLocaleString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // Экранируем кавычки для передачи в функции
+                const safeQuestion = item.question.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeAnswer = item.answer.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                html += `
+                    <div class="faq-item" id="faq-${item.id}">
+                        <div class="faq-question">❓ ${item.question}</div>
+                        <div class="faq-answer">${item.answer}</div>
+                        <div class="faq-meta">
+                            <span>📅 ${date}</span>
+                        </div>
+                        
+                        ${currentUser.role === 'admin' ? `
+                            <div class="faq-actions">
+                                <button class="edit-faq-btn" onclick='openEditModal(${item.id}, "${safeQuestion}", "${safeAnswer}")'>
+                                    ✏️ Ред.
+                                </button>
+                                <button class="delete-faq-btn" onclick="deleteFaq(${item.id})">
+                                    🗑️ Удал.
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            faqList.innerHTML = html;
+        }
+
+        // Показать/скрыть форму создания
+        function toggleCreateForm() {
+            const form = document.getElementById('createFaqSection');
+            form.classList.toggle('show');
+            
+            // Очищаем поля при открытии
+            if (form.classList.contains('show')) {
+                document.getElementById('newQuestion').value = '';
+                document.getElementById('newAnswer').value = '';
+            }
+        }
+
+        // Создание нового FAQ
+        function createFaq() {
+            const currentUser = checkAuth();
+            if (currentUser.role !== 'admin') {
+                showAlert('Только администратор может создавать вопросы!', 'error');
+                return;
+            }
+
+            const question = document.getElementById('newQuestion').value.trim();
+            const answer = document.getElementById('newAnswer').value.trim();
+
+            if (!question || !answer) {
+                showAlert('Заполните все поля!', 'error');
+                return;
+            }
+
+            const faqItems = JSON.parse(localStorage.getItem('faqItems')) || [];
+
+            const newFaq = {
+                id: Date.now(),
+                question: question,
+                answer: answer,
+                date: new Date().toISOString()
+            };
+
+            faqItems.push(newFaq);
+            localStorage.setItem('faqItems', JSON.stringify(faqItems));
+
+            // Очищаем поля и скрываем форму
+            document.getElementById('newQuestion').value = '';
+            document.getElementById('newAnswer').value = '';
+            document.getElementById('createFaqSection').classList.remove('show');
+
+            showAlert('Вопрос успешно добавлен!', 'success');
+            loadFaq();
+        }
+
+        // Открытие модального окна для редактирования
+        function openEditModal(id, question, answer) {
+            const currentUser = checkAuth();
+            if (currentUser.role !== 'admin') {
+                showAlert('Только администратор может редактировать вопросы!', 'error');
+                return;
+            }
+            
+            currentEditId = id;
+            document.getElementById('editQuestion').value = question;
+            document.getElementById('editAnswer').value = answer;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        // Закрытие модального окна
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentEditId = null;
+        }
+
+        // Сохранение отредактированного FAQ
+        function saveEdit() {
+            const currentUser = checkAuth();
+            if (currentUser.role !== 'admin') {
+                showAlert('Только администратор может редактировать вопросы!', 'error');
+                return;
+            }
+
+            const newQuestion = document.getElementById('editQuestion').value.trim();
+            const newAnswer = document.getElementById('editAnswer').value.trim();
+
+            if (!newQuestion || !newAnswer) {
+                showAlert('Заполните все поля!', 'error');
+                return;
+            }
+
+            const faqItems = JSON.parse(localStorage.getItem('faqItems')) || [];
+            const index = faqItems.findIndex(item => item.id === currentEditId);
+
+            if (index !== -1) {
+                faqItems[index].question = newQuestion;
+                faqItems[index].answer = newAnswer;
+                faqItems[index].date = new Date().toISOString(); // Обновляем дату
+
+                localStorage.setItem('faqItems', JSON.stringify(faqItems));
+
+                showAlert('Вопрос успешно обновлен!', 'success');
+                closeEditModal();
+                loadFaq();
+            } else {
+                showAlert('Ошибка: вопрос не найден!', 'error');
+            }
+        }
+
+        // Удаление FAQ
+        function deleteFaq(id) {
+            const currentUser = checkAuth();
+            if (currentUser.role !== 'admin') {
+                showAlert('Только администратор может удалять вопросы!', 'error');
+                return;
+            }
+
+            if (confirm('Вы уверены, что хотите удалить этот вопрос?')) {
+                let faqItems = JSON.parse(localStorage.getItem('faqItems')) || [];
+                faqItems = faqItems.filter(item => item.id !== id);
+                localStorage.setItem('faqItems', JSON.stringify(faqItems));
+
+                showAlert('Вопрос удален!', 'success');
+                loadFaq();
+            }
+        }
+
+        // Показ сообщений
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Закрытие модального окна по клику вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFaq();
+            updateUI();
+        });
+    </script>
+</body>
+</html>

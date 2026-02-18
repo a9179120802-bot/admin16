@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница форума</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .nav {
+            background: #2c3e50;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .site-title {
+            color: white;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #34495e;
+        }
+        
+        .nav-links a.active {
+            background: #667eea;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+        
+        .user-badge {
+            background: #27ae60;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .message-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* Кнопка-бургер в заголовке сообщения */
+        .message-burger-btn {
+            width: 45px;
+            height: 45px;
+            background: #667eea;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s, transform 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .message-burger-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+        
+        .message-burger-line {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        
+        /* Анимация для открытого бургера */
+        .message-burger-btn.open .message-burger-line:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .message-burger-btn.open .message-burger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .message-burger-btn.open .message-burger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        .message-title {
+            color: #333;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        
+        .current-message-badge {
+            background: #48bb78;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.5em;
+            font-weight: normal;
+        }
+        
+        .message-content {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .admin-edit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.3s;
+        }
+        
+        .admin-edit-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: transform 0.3s, background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #48bb78;
+        }
+        
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+        
+        .message-date {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: right;
+            font-style: italic;
+        }
+        
+        .message-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* Боковое меню */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+            transition: left 0.3s ease;
+            z-index: 99;
+            overflow-y: auto;
+            padding: 80px 20px 20px;
+        }
+        
+        .sidebar.open {
+            left: 0;
+        }
+        
+        .sidebar h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar h2 i {
+            font-size: 1.5em;
+        }
+        
+        .sidebar-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .sidebar-message-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .sidebar-message-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-message-card.current {
+            border-left: 5px solid #48bb78;
+            background: #f0fff4;
+        }
+        
+        .sidebar-message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .sidebar-message-date {
+            color: #666;
+            font-size: 0.85em;
+        }
+        
+        .sidebar-current-badge {
+            background: #48bb78;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+        }
+        
+        .sidebar-message-content {
+            color: #333;
+            line-height: 1.5;
+            font-size: 0.95em;
+            max-height: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .sidebar-no-messages {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 1.1em;
+        }
+        
+        /* Оверлей для затемнения фона */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 98;
+        }
+        
+        .overlay.open {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-left {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .message-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .message-title {
+                font-size: 1.5em;
+            }
+            
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            
+            .links {
+                flex-direction: column;
+            }
+            
+            .btn {
+                text-align: center;
+            }
+            
+            .admin-edit-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Боковое меню со всеми сообщениями -->
+    <div class="sidebar" id="sidebar">
+        <h2>
+            <span>📜 Все сообщения</span>
+        </h2>
+        <div class="sidebar-messages" id="sidebarMessages">
+            <!-- Сообщения будут загружены через JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Оверлей для затемнения -->
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+    
+    <div class="nav">
+        <div class="nav-left">
+            <span class="site-title">16 server</span>
+            <div class="nav-links">
+                <a href="index.html" class="active">Главная</a>
+                <a href="table.html">Таблица</a>
+                <a href="form.html">Форма</a>
+                <a href="faq.html">FAQ</a>
+                <a href="responses.html" id="responsesLink" style="display: none;">Ответы</a>
+                <a href="users.html" id="usersLink" style="display: none;">Пользователи</a>
+                <a href="admin-message.html" id="allMessagesLink" style="display: none;">Управление</a>
+            </div>
+        </div>
+        <div class="user-info">
+            <span class="user-badge" id="userRole">Загрузка...</span>
+            <span id="username">Гость</span>
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="message-box">
+            <div class="message-header">
+                <!-- Кнопка-бургер в заголовке сообщения -->
+                <button class="message-burger-btn" id="messageBurgerBtn" onclick="toggleSidebar()">
+                    <span class="message-burger-line"></span>
+                    <span class="message-burger-line"></span>
+                    <span class="message-burger-line"></span>
+                </button>
+                
+                <div class="message-title">
+                    📢 Текущее сообщение от администратора
+                    <span class="current-message-badge" id="currentMessageBadge">Актуальное</span>
+                </div>
+            </div>
+            
+            <!-- Кнопка управления сообщениями для администратора -->
+            <a href="admin-message.html" id="editMessageBtn" class="admin-edit-btn" style="display: none;">
+                ✏️ Управление сообщениями
+            </a>
+            
+            <!-- Статистика сообщений (только для админа) -->
+            <div class="message-stats" id="messageStats" style="display: none;">
+                <span id="totalMessagesCount">0</span> всего сообщений
+            </div>
+            
+            <div class="message-content" id="adminMessage">
+                Загрузка сообщения...
+            </div>
+            
+            <div class="message-date" id="messageDate"></div>
+            
+            <div class="links">
+                <a href="table.html" class="btn">📊 Перейти к таблице</a>
+                <a href="form.html" class="btn btn-secondary">📝 Перейти к форме</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Проверка авторизации
+        function checkAuth() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            return currentUser;
+        }
+
+        // Функция для перевода роли на русский
+        function getRoleText(role) {
+            switch(role) {
+                case 'admin': return 'Администратор';
+                case 'moderator': return 'Модератор';
+                case 'user': return 'Пользователь';
+                default: return role;
+            }
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            const currentUser = checkAuth();
+            if (!currentUser) return;
+
+            document.getElementById('username').textContent = currentUser.username;
+            document.getElementById('userRole').textContent = 'Роль: ' + getRoleText(currentUser.role);
+
+            // Показываем ссылки в зависимости от роли
+            const responsesLink = document.getElementById('responsesLink');
+            const usersLink = document.getElementById('usersLink');
+            const allMessagesLink = document.getElementById('allMessagesLink');
+            const editMessageBtn = document.getElementById('editMessageBtn');
+            const messageStats = document.getElementById('messageStats');
+            
+            // FAQ доступен всем, поэтому не скрываем
+            
+            if (currentUser.role === 'admin' || currentUser.role === 'moderator') {
+                responsesLink.style.display = 'inline-block';
+            }
+            
+            if (currentUser.role === 'admin') {
+                usersLink.style.display = 'inline-block';
+                allMessagesLink.style.display = 'inline-block';
+                editMessageBtn.style.display = 'inline-block';
+                messageStats.style.display = 'block';
+            }
+
+            // Загружаем текущее сообщение администратора
+            loadCurrentMessage();
+            
+            // Загружаем статистику для админа
+            if (currentUser.role === 'admin') {
+                loadMessageStats();
+            }
+            
+            // Загружаем все сообщения в боковое меню
+            loadSidebarMessages();
+        }
+
+        // Загрузка текущего сообщения
+        function loadCurrentMessage() {
+            const messages = JSON.parse(localStorage.getItem('adminMessages')) || [];
+            
+            // Ищем сообщение с флагом isCurrent
+            let currentMessage = messages.find(m => m.isCurrent === true);
+            
+            // Если нет текущего сообщения, берем последнее по дате
+            if (!currentMessage && messages.length > 0) {
+                messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                currentMessage = messages[0];
+                // Делаем его текущим
+                currentMessage.isCurrent = true;
+                localStorage.setItem('adminMessages', JSON.stringify(messages));
+            }
+            
+            if (currentMessage) {
+                // Отображаем сообщение
+                document.getElementById('adminMessage').textContent = currentMessage.content;
+                
+                // Форматируем дату
+                const date = new Date(currentMessage.date).toLocaleString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                document.getElementById('messageDate').textContent = `Последнее обновление: ${date}`;
+            } else {
+                // Если сообщений нет, создаем тестовое
+                const defaultMessage = {
+                    id: Date.now(),
+                    content: 'Добро пожаловать на 16 server! Здесь вы можете общаться, делиться мнениями и участвовать в опросах.',
+                    date: new Date().toISOString(),
+                    isCurrent: true
+                };
+                localStorage.setItem('adminMessages', JSON.stringify([defaultMessage]));
+                
+                document.getElementById('adminMessage').textContent = defaultMessage.content;
+                
+                const date = new Date(defaultMessage.date).toLocaleString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                document.getElementById('messageDate').textContent = `Последнее обновление: ${date}`;
+            }
+        }
+
+        // Загрузка статистики сообщений (для админа)
+        function loadMessageStats() {
+            const messages = JSON.parse(localStorage.getItem('adminMessages')) || [];
+            document.getElementById('totalMessagesCount').textContent = messages.length;
+        }
+
+        // Загрузка всех сообщений в боковое меню
+        function loadSidebarMessages() {
+            const sidebarMessages = document.getElementById('sidebarMessages');
+            const messages = JSON.parse(localStorage.getItem('adminMessages')) || [];
+            
+            if (messages.length === 0) {
+                sidebarMessages.innerHTML = '<div class="sidebar-no-messages">📭 Пока нет сообщений от администрации</div>';
+                return;
+            }
+            
+            // Сортируем по дате (сначала новые)
+            messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let html = '';
+            messages.forEach(message => {
+                const date = new Date(message.date).toLocaleString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const isCurrent = message.isCurrent || false;
+                
+                html += `
+                    <div class="sidebar-message-card ${isCurrent ? 'current' : ''}">
+                        <div class="sidebar-message-header">
+                            <span class="sidebar-message-date">📅 ${date}</span>
+                            ${isCurrent ? '<span class="sidebar-current-badge">Текущее</span>' : ''}
+                        </div>
+                        <div class="sidebar-message-content">
+                            ${message.content}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            sidebarMessages.innerHTML = html;
+        }
+
+        // Открыть/закрыть боковое меню
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const burgerBtn = document.getElementById('messageBurgerBtn');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+            burgerBtn.classList.toggle('open');
+        }
+
+        // Закрыть боковое меню
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const burgerBtn = document.getElementById('messageBurgerBtn');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            burgerBtn.classList.remove('open');
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', updateUI);
+    </script>
+</body>
+</html>
